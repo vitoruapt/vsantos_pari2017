@@ -93,7 +93,10 @@ void pari_ProcessUserOperations(IplImage *src, IplImage *dst)
 	cvCopy( src, dst, NULL);
 	
 	//Now operate all functions accumulated (one after one)
-	pari_UserOperation1(dst, dst, builderG, (gpointer)"checkbutton1", NULL);
+	/*pari_UserOperation1(dst, dst, builderG, (gpointer)"checkbutton1", NULL);*/
+	pari_UserOperation7(dst, dst, builderG, (gpointer)"checkbutton1", NULL);
+//Changed by Miguel for testing please replace as you eant
+
 	pari_UserOperation2(dst, dst, builderG, (gpointer)"checkbutton2", (gpointer)"adjustment1");
 	pari_UserOperation3(dst, dst, builderG, (gpointer)"checkbutton3", (gpointer)"adjustment2");
 	pari_UserOperation4(dst, dst, builderG, (gpointer)"checkbutton4", NULL);
@@ -125,6 +128,35 @@ void pari_UserOperation1(IplImage *src, IplImage *dst, GtkBuilder *gb, gpointer 
 		cvReleaseImage(&tmp_gray);   //free aux image
 	}
 }
+
+/**
+ * @brief Done by Miguel. Should flip the image
+ *
+ * @param src
+ * @param dst
+ * @param gb
+ * @param udata1
+ * @param udata2
+ */
+void pari_UserOperation7(IplImage *src, IplImage *dst, GtkBuilder *gb, gpointer udata1, gpointer udata2)
+{
+	if( ! (gb && udata1) ) return;
+
+	GtkToggleButton *grayl_w = (GtkToggleButton *)GTK_WIDGET(gtk_builder_get_object(gb, "checkbutton1"));
+	gboolean graylOn= gtk_toggle_button_get_active(grayl_w);
+	if( graylOn )
+	{
+		IplImage *tmp_gray=cvCreateImage( cvSize(src->width,src->height), IPL_DEPTH_8U, 1);  //aux image
+		cvCvtColor(src, tmp_gray, CV_RGB2GRAY);
+
+    //Added the flip function
+    cvFlip(tmp_gray, tmp_gray, 0);
+
+		cvMerge(tmp_gray, tmp_gray, tmp_gray, NULL, dst);
+		cvReleaseImage(&tmp_gray);   //free aux image
+	}
+}
+
 
 /**
  * @brief  Function to perform some specific operation. Threshold!
@@ -300,5 +332,8 @@ void pari_PerformImageAcquisition(CvCapture *capture)
         cvCopy(src_imageG, dst_imageG, NULL);           //copy src into dst and ready to process (admit similar image strucutre)
 }
 
+
+
 #endif
+
 

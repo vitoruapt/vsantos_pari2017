@@ -51,5 +51,7 @@
 // :r !ctags -x -R --c-kinds=f *.c | grep -v main|awk '{for(n=5;n<NF; n++) printf("\%s ", $n); printf("\%s;\n", $NF)}'
 
 #include "prototypes.h"
+void pari_UserOperation7(IplImage *src, IplImage *dst, GtkBuilder *gb, gpointer udata1, gpointer udata2);
+
 
 #endif /* _MYF_H */
